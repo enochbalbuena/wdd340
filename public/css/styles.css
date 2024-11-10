@@ -37,12 +37,12 @@ header .siteName a {
 }
 
 header .siteName a:hover {
-  color: #00aaff;
+  color: #002b41;
 }
 
 nav {
   flex-grow: 1;
-  background-color: #00aaff;
+  background-color: #002b41;
 }
 
 nav ul {
@@ -75,7 +75,7 @@ nav ul li a:hover {
 }
 
 #tools a {
-  color: #00aaff;
+  color: #fff;
   text-decoration: none;
 }
 
@@ -127,7 +127,7 @@ nav ul li a:hover {
 
 .btn-own {
   padding: 12px 25px;
-  background-color: #00aaff;
+  background-color: #002b41;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -179,7 +179,7 @@ nav ul li a:hover {
 }
 
 .upgrade-card a {
-  color: #00aaff;
+  color: #002b41;
   text-decoration: none;
   font-weight: bold;
 }
