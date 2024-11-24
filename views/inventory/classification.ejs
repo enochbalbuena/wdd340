@@ -1,10 +1,11 @@
-<% if (title) { %>
-    <h1><%= title %></h1>
-    <% } else {
-      res.redirect('/')
-    } %>
+<main class="classification-container">
+  <% if (title) { %>
+      <h1 class="classification-title"><%= title %></h1>
+  <% } else { %>
+      <script>window.location.href = "/"</script>
+  <% } %>
 
-<%# messages() %>
-
-<%- grid %>
-
+  <div class="vehicles-grid">
+      <%- grid %>
+  </div>
+</main>

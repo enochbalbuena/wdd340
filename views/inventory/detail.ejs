@@ -1,0 +1,20 @@
+<div class="details-page-container">
+    <main class="vehicle-details">
+      <div class="detail-title">
+        <h1><%= title %></h1>
+      </div>
+      <div class="details-container">
+        <div class="image-container">
+          <img src="<%= detailView.inv_image %>" alt="<%= detailView.inv_make %> <%= detailView.inv_model %>">
+        </div>
+        <div class="info-container">
+          <h2><%= detailView.inv_make %> <%= detailView.inv_model %> (<%= detailView.inv_year %>)</h2>
+          <p><strong>Price:</strong> $<%= new Intl.NumberFormat('en-US').format(detailView.inv_price) %></p>
+          <p><strong>Mileage:</strong> <%= new Intl.NumberFormat('en-US').format(detailView.inv_miles) %> miles</p>
+          <p><strong>Color:</strong> <%= detailView.inv_color %></p>
+          <p><strong>Description:</strong> <%= detailView.inv_description %></p>
+        </div>
+      </div>
+    </main>
+  </div>
+  
