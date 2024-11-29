@@ -19,66 +19,66 @@
       </ul>
     <% } %>
   
-    <!-- Registration Form -->
-    <form action="/account/register" method="POST" class="registration-form">
-      <div class="form-group">
-        <label for="account_firstname" class="form-label">First Name</label>
-        <input 
-          type="text" 
-          id="account_firstname" 
-          name="account_firstname" 
+<!-- Registration Form -->
+<form action="/account/register" method="POST" class="registration-form">
+    <div class="form-group">
+      <label for="account_firstname" class="form-label">First Name</label>
+      <input 
+        type="text" 
+        id="account_firstname" 
+        name="account_firstname" 
+        class="form-input"
+        required 
+        placeholder="Enter your first name"
+        value="<%= account_firstname || '' %>"> <!-- Ensure this line is correct -->
+    </div>
+  
+    <div class="form-group">
+      <label for="account_lastname" class="form-label">Last Name</label>
+      <input 
+        type="text" 
+        id="account_lastname" 
+        name="account_lastname" 
+        class="form-input"
+        required 
+        placeholder="Enter your last name"
+        value="<%= account_lastname || '' %>"> <!-- Ensure this line is correct -->
+    </div>
+  
+    <div class="form-group">
+      <label for="account_email" class="form-label">Email Address</label>
+      <input 
+        type="email" 
+        id="account_email" 
+        name="account_email" 
+        class="form-input"
+        required 
+        placeholder="Enter your email"
+        value="<%= account_email || '' %>"> <!-- Ensure this line is correct -->
+    </div>
+  
+    <div class="form-group">
+      <label for="account_password" class="form-label">Password</label>
+      <div class="password-container">
+          <input
+          type="password"
+          id="account_password"
+          name="account_password"
           class="form-input"
-          required 
-          placeholder="Enter your first name"
-          value="<%= account_firstname || '' %>">
+          required
+          placeholder="Enter your password"
+          minlength="12"
+          pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?]).{12,}$"
+          />
+        <button type="button" id="togglePassword" class="toggle-password">Show</button>
       </div>
+      <p class="password-hint">
+        Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.
+      </p>
+    </div>
   
-      <div class="form-group">
-        <label for="account_lastname" class="form-label">Last Name</label>
-        <input 
-          type="text" 
-          id="account_lastname" 
-          name="account_lastname" 
-          class="form-input"
-          required 
-          placeholder="Enter your last name"
-          value="<%= account_lastname || '' %>">
-      </div>
-  
-      <div class="form-group">
-        <label for="account_email" class="form-label">Email Address</label>
-        <input 
-          type="email" 
-          id="account_email" 
-          name="account_email" 
-          class="form-input"
-          required 
-          placeholder="Enter your email"
-          value="<%= account_email || '' %>">
-      </div>
-  
-      <div class="form-group">
-        <label for="account_password" class="form-label">Password</label>
-        <div class="password-container">
-            <input
-            type="password"
-            id="account_password"
-            name="account_password"
-            class="form-input"
-            required
-            placeholder="Enter your password"
-            minlength="12"
-            pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?]).{12,}$"
-            />
-          <button type="button" id="togglePassword" class="toggle-password">Show</button>
-        </div>
-        <p class="password-hint">
-          Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.
-        </p>
-      </div>
-  
-      <button type="submit" class="registration-button">Register</button>
-    </form>
+    <button type="submit" class="registration-button">Register</button>
+  </form>
   
     <script>
       // JavaScript to toggle password visibility
@@ -91,5 +91,4 @@
         this.textContent = type === "password" ? "Show" : "Hide";
       });
     </script>
-  </div>
-  
+</div>

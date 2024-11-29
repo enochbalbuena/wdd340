@@ -1,5 +1,6 @@
 const utilities = require("."); // Import index.js from the utilities folder
 const { body, validationResult } = require("express-validator"); // Import express-validator tools
+const accountModel = require("../models/account-model"); // Import account model
 const validate = {}; // Create a validate object
 
 /* **********************************
@@ -26,12 +27,17 @@ validate.registrationRules = () => {
       // A valid email is required and cannot already exist in the database
       body("account_email")
         .trim()
-        .escape()
-        .notEmpty()
         .isEmail()
         .normalizeEmail() // Sanitize email
-        .withMessage("A valid email is required."),
-  
+        .withMessage("A valid email is required.")
+        .custom(async (account_email) => {
+          // Custom validation to check if the email exists in the database
+          const emailExists = await accountModel.checkExistingEmail(account_email);
+          if (emailExists) {
+            throw new Error("Email exists. Please log in or use a different email");
+          }
+        }),
+
       // Password is required and must be strong
       body("account_password")
         .trim()
@@ -51,22 +57,21 @@ validate.registrationRules = () => {
  * Check data and return errors or continue to registration
  * ***************************** */
 validate.checkRegData = async (req, res, next) => {
-  const { account_firstname, account_lastname, account_email } = req.body;
-  const errors = validationResult(req); // Get validation errors
-
-  if (!errors.isEmpty()) {
-    const nav = await utilities.getNav(); // Fetch navigation
-    res.status(400).render("account/register", {
-      errors: errors.array(), // Pass errors array to the view
-      title: "Register",
-      nav,
-      account_firstname, // Preserve entered data
-      account_lastname, // Preserve entered data
-      account_email, // Preserve entered data
-    });
-    return; // Stop further processing
-  }
-  next(); // If no errors, proceed to the next middleware/controller
-};
+    const errors = validationResult(req); // Get validation errors
+  
+    if (!errors.isEmpty()) {
+      const nav = await utilities.getNav(); // Fetch navigation
+      res.status(400).render("account/register", {
+        errors: errors.array(), // Pass errors array to the view
+        title: "Register",
+        nav,
+        account_firstname: req.body.account_firstname || '', // Preserve first name
+        account_lastname: req.body.account_lastname || '',   // Preserve last name
+        account_email: req.body.account_email || ''          // Preserve email
+      });
+      return; // Stop further processing
+    }
+    next(); // If no errors, proceed to the next middleware/controller
+  };
 
 module.exports = validate;
