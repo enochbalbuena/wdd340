@@ -1,32 +1,37 @@
-const invModel = require("../models/inventory-model")
-const Util = {}
+const invModel = require("../models/inventory-model");
+const Util = {};
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function (req, res, next) {
-  let data = await invModel.getClassifications()
-  let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
-  data.rows.forEach((row) => {
-    list += "<li>"
-    list +=
-      '<a href="/inv/type/' +
-      row.classification_id +
-      '" title="See our inventory of ' +
-      row.classification_name +
-      ' vehicles">' +
-      row.classification_name +
-      "</a>"
-    list += "</li>"
-  })
-  list += "</ul>"
-  return list
-}
+  try {
+    let data = await invModel.getClassifications();
+    let list = "<ul>";
+    list += '<li><a href="/" title="Home page">Home</a></li>';
+    data.rows.forEach((row) => {
+      list += "<li>";
+      list +=
+        '<a href="/inv/type/' +
+        row.classification_id +
+        '" title="See our inventory of ' +
+        row.classification_name +
+        ' vehicles">' +
+        row.classification_name +
+        "</a>";
+      list += "</li>";
+    });
+    list += "</ul>";
+    return list;
+  } catch (err) {
+    console.error("Error generating navigation:", err);
+    next(err);
+  }
+};
 
 /* **************************************
-* Build the classification view HTML
-* ************************************ */
+ * Build the classification view HTML
+ ************************************** */
 Util.buildClassificationGrid = async function (data) {
   let grid = "";
   if (data.length > 0) {
@@ -47,21 +52,40 @@ Util.buildClassificationGrid = async function (data) {
   return grid;
 };
 
-
-  /* ***************************
+/* ***************************
  *  Build the vehicle detail view HTML
- * ************************** */
-  Util.buildDetailView = async function (data) {
-    return {
-      inv_image: data.inv_image, // Full-size image
-      inv_make: data.inv_make,
-      inv_model: data.inv_model,
-      inv_year: data.inv_year,
-      inv_price: data.inv_price,
-      inv_miles: data.inv_miles,
-      inv_color: data.inv_color,
-      inv_description: data.inv_description,
-    };
+ *************************** */
+Util.buildDetailView = async function (data) {
+  return {
+    inv_image: data.inv_image, // Full-size image
+    inv_make: data.inv_make,
+    inv_model: data.inv_model,
+    inv_year: data.inv_year,
+    inv_price: data.inv_price,
+    inv_miles: data.inv_miles,
+    inv_color: data.inv_color,
+    inv_description: data.inv_description,
   };
+};
 
-module.exports = Util
+/* ***************************
+ * Error Handler Middleware
+ *************************** */
+Util.errorHandler = function (err, req, res, next) {
+  console.error("Error:", err.stack); // Log the error for debugging
+  res.status(err.status || 500).render("error", {
+    title: "Server Error",
+    message: "Something went wrong on our end. Please try again later.",
+  });
+};
+
+/* ***************************
+ * Handle Errors Wrapper
+ *************************** */
+Util.handleErrors = function (fn) {
+  return function (req, res, next) {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+};
+
+module.exports = Util;

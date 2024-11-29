@@ -471,6 +471,169 @@ footer p a:hover {
   color: #ffd700;
 }
 
+/******* Login Form Styles *******/
+
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  background-color: #34495e; /* Dark background for form container */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-align: center;
+}
+
+.login-container h1 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-container label {
+  text-align: left;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.login-container input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 1em;
+}
+
+.login-container input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+.login-container button {
+  background-color: #1abc9c; /* Green login button */
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #16a085; /* Darker green on hover */
+}
+
+.signup-link {
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.signup-link a {
+  color: #1abc9c;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+/******* Registration Form Styles *******/
+
+.registration-container {
+  max-width: 400px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.registration-title {
+  font-size: 1.8em;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.form-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-password {
+  padding: 8px 12px;
+  border: none;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 5px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-password:hover {
+  background-color: #0056b3;
+}
+
+.password-hint {
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.registration-button {
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registration-button:hover {
+  background-color: #218838;
+}
+
 @media (max-width: 767px) {
   .content-grid {
     flex-direction: column;
@@ -500,5 +663,23 @@ footer p a:hover {
 
   .info-container {
     margin-top: 20px;
+  }
+
+  .login-container {
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .login-container h1 {
+    font-size: 1.5em;
+  }
+
+  .login-container input {
+    font-size: 0.9em;
+  }
+
+  .login-container button {
+    font-size: 0.9em;
+    padding: 10px;
   }
 }

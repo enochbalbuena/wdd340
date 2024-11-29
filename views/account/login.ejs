@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <main class="login-container">
+    <h1><%= title %></h1>
+
+    <!-- Flash messages -->
+    <% if (messages && Object.keys(messages).length > 0) { %>
+      <div class="flash-messages">
+        <% Object.keys(messages).forEach(function (type) { %>
+          <div class="flash <%= type %>"><%= messages[type] %></div>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <!-- Login Form -->
+    <form action="/account/login" method="POST" class="login-form">
+      <div class="form-group">
+        <label for="account_email">Email:</label>
+        <input 
+          type="email" 
+          id="account_email" 
+          name="account_email" 
+          class="form-input" 
+          required 
+          placeholder="Enter your email">
+      </div>
+      <div class="form-group">
+        <label for="account_password">Password:</label>
+        <input 
+          type="password" 
+          id="account_password" 
+          name="account_password" 
+          class="form-input" 
+          required 
+          placeholder="Enter your password"
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+        <p class="password-hint">
+          Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.
+        </p>
+      </div>
+      <button type="submit" class="login-button">Login</button>
+    </form>
+
+    <!-- Registration Link -->
+    <p class="signup-link">
+      Don't have an account? <a href="/account/register">Register here</a>.
+    </p>
+  </main>
+</body>
+</html>
