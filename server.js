@@ -1,28 +1,20 @@
-/* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
- *******************************************/
-/* ***********************
- * Require Statements
- *************************/
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-const env = require("dotenv").config();
+const dotenv = require("dotenv").config();
 const app = express();
 const static = require("./routes/static");
 const baseController = require("./controllers/baseController");
 const inventoryRoute = require("./routes/inventoryRoute");
-const accountRoute = require("./routes/accountRoute"); // Added accountRoute
+const accountRoute = require("./routes/accountRoute");
 const errorRoute = require("./routes/errorRoute");
-const utilities = require("./utilities"); // Added utilities for nav generation
+const utilities = require("./utilities");
 const session = require("express-session");
 const pool = require("./database/");
-const bodyParser = require("body-parser"); // Added body-parser
+const bodyParser = require("body-parser");
+const flash = require("connect-flash");
 
-/* ***********************
- * Middleware
- *************************/
-// Session Configuration
+
+// Session Middleware
 app.use(
   session({
     store: new (require("connect-pg-simple")(session))({
@@ -36,81 +28,80 @@ app.use(
   })
 );
 
-// Express Messages Middleware
-app.use(require("connect-flash")());
-app.use(function (req, res, next) {
-  res.locals.messages = require("express-messages")(req, res);
+// Flash Middleware
+app.use(flash());
+
+// Middleware to attach flash messages just before rendering
+app.use((req, res, next) => {
+  res.locals.flashMessages = {}; // Initialize flashMessages
   next();
 });
 
 // Body-Parser Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
-/* ***********************
- * View Engine and Templates
- *************************/
+// Static Files
+app.use(express.static("public"));
+
+/* View Engine and Layouts */
 app.set("view engine", "ejs");
 app.use(expressLayouts);
-app.set("layout", "./layouts/layout"); // not at views root
+app.set("layout", "./layouts/layout");
 
-/* ***********************
- * Routes
- *************************/
+/* Routes */
 app.use(static);
-
-// Index route
 app.get("/", baseController.buildHome);
-
-// Inventory routes
 app.use("/inv", inventoryRoute);
-
-// Account routes
-app.use("/account", accountRoute); // Added accountRoute
-
-// Error routes
+app.use("/account", accountRoute);
 app.use("/error", errorRoute);
+app.get('/test-flash', (req, res) => {
+  req.flash('success', 'Flash messages are working!');
+  res.redirect('/inv/management');
+});
 
-/* ***********************
- * Global Error Handling Middleware
- *************************/
+// Flash middleware
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.flash(); // Ensure flash messages exist globally
+  console.log("Middleware Flash Messages:", res.locals.flashMessages);
+  next();
+});
+
+
+/* Error Handling */
 app.use(async (err, req, res, next) => {
-  console.error(err.stack); // Log the error for debugging
-
-  // Generate navigation HTML
-  const nav = await utilities.getNav();
-
+  let nav = "";
+  try {
+    nav = await utilities.getNav();
+  } catch (navError) {
+    console.error("Error generating navigation:", navError);
+  }
+  console.error("Error:", err.stack);
   res.status(err.status || 500).render("error", {
     title: "Server Error",
     message: "Something went wrong on our end. Please try again later.",
-    nav, // Pass nav to the error view
+    nav,
   });
 });
 
-/* ***********************
- * Handle 404 Errors
- *************************/
+/* 404 Handling */
 app.use(async (req, res, next) => {
-  // Generate navigation HTML
-  const nav = await utilities.getNav();
-
+  let nav = "";
+  try {
+    nav = await utilities.getNav();
+  } catch (navError) {
+    console.error("Error generating navigation:", navError);
+  }
   res.status(404).render("error", {
     title: "404 - Page Not Found",
     message: "The page you are looking for does not exist.",
-    nav, // Pass nav to the 404 view
+    nav,
   });
 });
 
-/* ***********************
- * Local Server Information
- * Values from .env (environment) file
- *************************/
-const port = process.env.PORT || 3000; // Added fallback default values
+/* Start the Server */
+const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";
-
-/* ***********************
- * Start the Server
- *************************/
 app.listen(port, () => {
   console.log(`App listening on http://${host}:${port}`);
 });

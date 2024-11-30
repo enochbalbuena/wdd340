@@ -3,7 +3,22 @@
     <div class="hero-overlay">
       <div class="hero-content">
         <h1>Welcome to CSE Motors!</h1>
-        <%- messages() %>
+        <!-- Flash Messages -->
+          <% if (flashMessages.error && flashMessages.error.length > 0) { %>
+            <div class="flash-message error">
+              <% flashMessages.error.forEach(function (msg) { %>
+                <p style="color: red;"><%= msg %></p>
+              <% }); %>
+            </div>
+          <% } %>
+
+          <% if (flashMessages.success && flashMessages.success.length > 0) { %>
+            <div class="flash-message success">
+              <% flashMessages.success.forEach(function (msg) { %>
+                <p style="color: green;"><%= msg %></p>
+              <% }); %>
+            </div>
+          <% } %>
         <p>Your dream car is just a click away. Discover our range of customized DMC Deloreans!</p>
         <button class="btn-own">Own Today</button>
       </div>

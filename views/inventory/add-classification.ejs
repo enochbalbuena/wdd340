@@ -1,0 +1,35 @@
+<main class="form-container">
+    <h1>Add Classification</h1>
+  
+    <!-- Flash Messages -->
+    <% if (flashMessages && flashMessages.error && flashMessages.error.length > 0) { %>
+      <div class="flash-message error">
+        <% flashMessages.error.forEach(function (msg) { %>
+          <p><%= msg %></p>
+        <% }); %>
+      </div>
+    <% } %>
+  
+    <% if (flashMessages && flashMessages.success && flashMessages.success.length > 0) { %>
+      <div class="flash-message success">
+        <% flashMessages.success.forEach(function (msg) { %>
+          <p><%= msg %></p>
+        <% }); %>
+      </div>
+    <% } %>
+  
+    <form action="/inv/add-classification" method="POST" novalidate>
+      <label for="classification_name">Classification Name</label>
+      <input
+        type="text"
+        id="classification_name"
+        name="classification_name"
+        value="<%= stickyData.classification_name || '' %>"
+        required
+        pattern="^[a-zA-Z]+$"
+        title="Only alphabetic characters are allowed."
+        />
+      <button type="submit" class="btn-submit">Add Classification</button>
+    </form>
+  </main>
+  
