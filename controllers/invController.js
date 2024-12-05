@@ -58,19 +58,22 @@ invCont.buildByInvId = async function (req, res, next) {
 /* ***************************
  *  Build Management View
  * ************************** */
-invCont.buildManagementView = async function (req, res, next) {
+async function buildManagementView(req, res, next) {
   try {
     const nav = await utilities.getNav();
-    const flashMessages = req.flash();
-    res.render("./inventory/management", {
-      title: "Vehicle Management",
+    const classificationSelect = await utilities.buildClassificationList();
+    res.render("inventory/management", {
+      title: "Inventory Management",
       nav,
-      flashMessages,
+      classificationSelect,
+      flashMessages: req.flash(),
     });
   } catch (error) {
     next(error);
   }
-};
+}
+
+
 
 /* ***************************
  *  Build Add Classification View
@@ -192,4 +195,28 @@ invCont.processAddVehicle = async function (req, res, next) {
   }
 };
 
-module.exports = invCont;
+/* ***************************
+ *  Return Inventory by Classification As JSON
+ * ************************** */
+invCont.getInventoryJSON = async (req, res, next) => {
+  try {
+    const classification_id = parseInt(req.params.classification_id);
+    if (isNaN(classification_id)) {
+      return res.status(400).json({ error: "Invalid classification ID" });
+    }
+    const invData = await invModel.getInventoryByClassificationId(classification_id);
+    if (invData.length > 0) {
+      return res.json(invData);
+    } else {
+      return res.status(404).json({ error: "No inventory found for this classification" });
+    }
+  } catch (error) {
+    console.error("Error fetching inventory:", error);
+    next(error);
+  }
+};
+
+module.exports = {
+  buildManagementView,
+  getInventoryJSON: invCont.getInventoryJSON,
+};

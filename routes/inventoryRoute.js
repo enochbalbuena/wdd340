@@ -50,4 +50,10 @@ router.post(
   Util.handleErrors(invController.processAddVehicle) // Wrap async function
 );
 
+// New route for getting inventory by classification ID as JSON
+router.get(
+  "/getInventory/:classification_id",
+  Util.handleErrors(invController.getInventoryJSON)
+);
+
 module.exports = router;

@@ -57,21 +57,62 @@ validate.registrationRules = () => {
  * Check data and return errors or continue to registration
  * ***************************** */
 validate.checkRegData = async (req, res, next) => {
-    const errors = validationResult(req); // Get validation errors
-  
-    if (!errors.isEmpty()) {
-      const nav = await utilities.getNav(); // Fetch navigation
-      res.status(400).render("account/register", {
-        errors: errors.array(), // Pass errors array to the view
-        title: "Register",
-        nav,
-        account_firstname: req.body.account_firstname || '', // Preserve first name
-        account_lastname: req.body.account_lastname || '',   // Preserve last name
-        account_email: req.body.account_email || ''          // Preserve email
-      });
-      return; // Stop further processing
-    }
-    next(); // If no errors, proceed to the next middleware/controller
-  };
+  const errors = validationResult(req); // Get validation errors
+
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav(); // Fetch navigation
+    res.status(400).render("account/register", {
+      errors: errors.array(), // Extract errors as an array
+      title: "Register",
+      nav,
+      account_firstname: req.body.account_firstname || '', // Preserve first name
+      account_lastname: req.body.account_lastname || '',   // Preserve last name
+      account_email: req.body.account_email || '',         // Preserve email
+      messages: req.flash(), // Add flash messages
+    });
+    return; // Stop further processing
+  }
+  next(); // If no errors, proceed to the next middleware/controller
+};
+
+/* **********************************
+ *  Login Data Validation Rules
+ * ********************************* */
+validate.loginRules = () => {
+  return [
+    // A valid email is required
+    body("account_email")
+      .trim()
+      .isEmail()
+      .normalizeEmail() // Sanitize email
+      .withMessage("A valid email is required."),
+
+    // Password is required
+    body("account_password")
+      .trim()
+      .notEmpty()
+      .withMessage("Password is required."),
+  ];
+};
+
+/* ******************************
+ * Check login data and return errors or continue to login
+ * ***************************** */
+validate.checkLoginData = async (req, res, next) => {
+  const errors = validationResult(req); // Get validation errors
+
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav(); // Fetch navigation
+    res.status(400).render("account/login", {
+      errors: errors.array(), // Pass errors array to the view
+      title: "Login",
+      nav,
+      account_email: req.body.account_email || '', // Preserve email
+    });
+    return; // Stop further processing
+  }
+  next(); // If no errors, proceed to the next middleware/controller
+};
+
 
 module.exports = validate;

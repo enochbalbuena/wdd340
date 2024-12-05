@@ -12,7 +12,10 @@ const session = require("express-session");
 const pool = require("./database/");
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
+const cookieParser = require("cookie-parser")
 
+app.use(cookieParser())
+app.use(utilities.checkJWTToken)
 
 // Session Middleware
 app.use(

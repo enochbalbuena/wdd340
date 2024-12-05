@@ -15,10 +15,9 @@
       <div class="flash-messages">
         <% Object.keys(messages).forEach(function (type) { %>
           <div class="flash <%= type %>"><%= messages[type] %></div>
-        <% }); %>
+        <% }) %>
       </div>
     <% } %>
-
     <!-- Login Form -->
     <form action="/account/login" method="POST" class="login-form">
       <div class="form-group">
@@ -33,14 +32,17 @@
       </div>
       <div class="form-group">
         <label for="account_password">Password:</label>
-        <input 
-          type="password" 
-          id="account_password" 
-          name="account_password" 
-          class="form-input" 
-          required 
-          placeholder="Enter your password"
-          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+        <div class="password-container">
+          <input 
+            type="password" 
+            id="account_password" 
+            name="account_password" 
+            class="form-input" 
+            required 
+            placeholder="Enter your password"
+            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+          <button type="button" id="togglePassword" class="toggle-password">Show</button>
+        </div>
         <p class="password-hint">
           Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.
         </p>
@@ -53,5 +55,13 @@
       Don't have an account? <a href="/account/register">Register here</a>.
     </p>
   </main>
+  <script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+      const passwordField = document.getElementById("account_password");
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+      this.textContent = type === "password" ? "Show" : "Hide";
+    });
+  </script>
 </body>
 </html>

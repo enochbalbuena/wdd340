@@ -22,4 +22,26 @@
         <li><a href="/inv/add-classification">Add New Classification</a></li>
         <li><a href="/inv/add-vehicle">Add New Vehicle</a></li>
     </ul>
+
+    <!-- Inventory Management Section -->
+    <h2>Manage Inventory</h2>
+    <p>Select a classification from the list below to view and manage inventory items.</p>
+
+    <!-- Classification Select List -->
+    <form id="classificationSelectForm">
+        <label for="classificationList">Select Classification:</label>
+        <select name="classification_id" id="classificationList">
+            <option value="">--Select a Classification--</option>
+            <%- classificationSelect %> <!-- Render classification options -->
+        </select>
+    </form>
+
+    <!-- Inventory Display Table -->
+    <table id="inventoryDisplay"></table>
+
+    <!-- Fallback Message for Disabled JavaScript -->
+    <noscript>JavaScript must be enabled to use this page.</noscript>
 </main>
+
+
+<script src="../../js/inventory.js"></script>

@@ -1,4 +1,8 @@
 const invModel = require("../models/inventory-model");
+const pool = require("../database"); // Make sure to import your database pool
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 const Util = {};
 
 /* ************************
@@ -35,7 +39,6 @@ Util.getNav = async function () {
     return "<ul><li><a href='/'>Home</a></li></ul>";
   }
 };
-
 
 /* **************************************
  * Build the classification view HTML
@@ -89,14 +92,14 @@ Util.buildDetailView = function (data) {
  ************************** */
 Util.buildClassificationList = async function () {
   try {
-    const classifications = await invModel.getClassifications();
-    let dropdown = '<select name="classification_id" id="classification_id" required>';
-    dropdown += '<option value="">--Select a Classification--</option>';
-    classifications.forEach((classification) => {
+    const classifications = await pool.query(
+      "SELECT * FROM public.classification ORDER BY classification_name"
+    );
+    let dropdown = "";
+    classifications.rows.forEach((classification) => {
       dropdown += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
     });
-    dropdown += "</select>";
-    return dropdown;
+    return dropdown; // Return only the <option> elements
   } catch (error) {
     console.error("Error building classification list:", error);
     throw error;
@@ -109,12 +112,47 @@ Util.buildClassificationList = async function () {
 Util.handleErrors = function (fn) {
   return function (req, res, next) {
     if (typeof fn !== "function") {
-      console.error("Error: fn is not a function", fn);
-      throw new TypeError("fn is not a function");
+      console.error("Error: fn is not a function:", fn);
+      return next(new TypeError("fn is not a function"));
     }
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
 
+/* ****************************************
+ * Middleware to check token validity
+ **************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+        res.locals.accountData = accountData;
+        res.locals.loggedin = 1;
+        next();
+      }
+    );
+  } else {
+    next();
+  }
+};
+
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next();
+  } else {
+    req.flash("notice", "Please log in.");
+    return res.redirect("/account/login");
+  }
+};
 
 module.exports = Util;

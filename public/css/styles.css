@@ -761,6 +761,21 @@ form.add-vehicle-form button:hover {
   background-color: #ff5722;
 }
 
+#inventoryDisplay {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#inventoryDisplay th, #inventoryDisplay td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#inventoryDisplay th {
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
 @media (max-width: 767px) {
   .content-grid {
     flex-direction: column;
