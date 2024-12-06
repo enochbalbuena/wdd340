@@ -776,6 +776,94 @@ form.add-vehicle-form button:hover {
   text-align: left;
 }
 
+/* Styles specific to the Edit Inventory form */
+#edit-inventory-form {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#edit-inventory-form label {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
+}
+
+#edit-inventory-form input,
+#edit-inventory-form select,
+#edit-inventory-form textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+#edit-inventory-form select {
+  font-size: 1rem;
+  appearance: none; /* For consistent dropdown appearance */
+}
+
+#edit-inventory-form button.btn-submit {
+  padding: 12px 20px;
+  background-color: #002b41;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#edit-inventory-form button.btn-submit:hover {
+  background-color: #ff5722;
+}
+
+#edit-inventory-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+#edit-inventory-form select:focus,
+#edit-inventory-form input:focus,
+#edit-inventory-form textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#edit-inventory-form select {
+  font-size: 1rem;
+  appearance: none; /* Ensures a consistent dropdown across browsers */
+  padding: 12px; /* Add sufficient padding for readability */
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Slightly rounded corners */
+  background-color: #fff; /* Ensure it's clearly visible */
+  width: 100%; /* Full width */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for focus */
+}
+
+#edit-inventory-form select:focus {
+  border-color: #007bff; /* Blue outline on focus */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Glow effect */
+  outline: none;
+}
+
+.edit-dropdown {
+  font-size: 1rem;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
 @media (max-width: 767px) {
   .content-grid {
     flex-direction: column;

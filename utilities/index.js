@@ -90,19 +90,23 @@ Util.buildDetailView = function (data) {
 /* ***************************
  * Build classification dropdown list
  ************************** */
-Util.buildClassificationList = async function () {
+Util.buildClassificationList = async function (selectedId) {
   try {
-    const classifications = await pool.query(
-      "SELECT * FROM public.classification ORDER BY classification_name"
-    );
-    let dropdown = "";
-    classifications.rows.forEach((classification) => {
-      dropdown += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
-    });
-    return dropdown; // Return only the <option> elements
+      const classifications = await pool.query(
+          "SELECT * FROM public.classification ORDER BY classification_name"
+      );
+      let dropdown = "";
+      classifications.rows.forEach((classification) => {
+          console.log(`Processing classification: ${classification.classification_name}`);
+          dropdown += `<option value="${classification.classification_id}" ${
+              classification.classification_id == selectedId ? "selected" : ""
+          }>${classification.classification_name}</option>`;
+      });
+      console.log("Generated Dropdown:", dropdown);
+      return dropdown;
   } catch (error) {
-    console.error("Error building classification list:", error);
-    throw error;
+      console.error("Error building classification list:", error);
+      throw error;
   }
 };
 

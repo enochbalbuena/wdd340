@@ -58,7 +58,7 @@ invCont.buildByInvId = async function (req, res, next) {
 /* ***************************
  *  Build Management View
  * ************************** */
-async function buildManagementView(req, res, next) {
+invCont.buildManagementView = async function (req, res, next) {
   try {
     const nav = await utilities.getNav();
     const classificationSelect = await utilities.buildClassificationList();
@@ -71,8 +71,7 @@ async function buildManagementView(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
-
+};
 
 
 /* ***************************
@@ -216,7 +215,41 @@ invCont.getInventoryJSON = async (req, res, next) => {
   }
 };
 
+invCont.editInventoryView = async function (req, res, next) {
+  try {
+      const inv_id = parseInt(req.params.inv_id);
+      const nav = await utilities.getNav();
+      const itemData = await invModel.getInventoryByInvId(inv_id);
+
+      if (!itemData) {
+          req.flash("error", "Inventory item not found.");
+          return res.redirect("/inv/management");
+      }
+
+      const classificationSelect = await utilities.buildClassificationList(itemData.classification_id);
+      const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
+
+      res.render("./inventory/edit-inventory", {
+        title: "Edit " + itemName,
+        nav,
+        classificationList: classificationSelect,
+        inv_id: itemData.inv_id,
+        inv_make: itemData.inv_make,
+        inv_model: itemData.inv_model,
+        inv_year: itemData.inv_year,
+        inv_description: itemData.inv_description,
+        inv_price: itemData.inv_price,
+        inv_miles: itemData.inv_miles,
+        inv_color: itemData.inv_color,
+    });
+  } catch (error) {
+      next(error);
+  }
+};
+
+
 module.exports = {
-  buildManagementView,
+  buildManagementView: invCont.buildManagementView,
+  editInventoryView: invCont.editInventoryView,
   getInventoryJSON: invCont.getInventoryJSON,
 };
