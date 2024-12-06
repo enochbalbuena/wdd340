@@ -21,10 +21,8 @@
     <!-- Classification Dropdown -->
     <label for="classification_id">Classification</label>
     <select id="classification_id" name="classification_id" required>
-        <%- classificationList %>
+      <%- classificationList %>
     </select>
-    
-
 
     <!-- Vehicle Make -->
     <label for="inv_make">Make</label>
@@ -109,6 +107,8 @@
     />
 
     <!-- Submit Button -->
-    <button type="submit" class="btn-submit">Update Vehicle</button>
+    <button type="submit" class="btn-submit" disabled>Update Vehicle</button>
   </form>
 </main>
+
+<script src="/js/inv-update.js"></script>

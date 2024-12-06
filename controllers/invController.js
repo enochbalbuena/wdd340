@@ -247,9 +247,54 @@ invCont.editInventoryView = async function (req, res, next) {
   }
 };
 
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+invCont.updateInventory = async function (req, res, next) {
+  try {
+    const {
+      inv_id,
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_price,
+      inv_miles,
+      inv_color,
+    } = req.body;
+
+    const updateResult = await invModel.updateInventory(
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      "/images/vehicles/no-image.png", // Placeholder for image
+      "/images/vehicles/no-image.png", // Placeholder for thumbnail
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id
+    );
+
+    if (updateResult) {
+      req.flash("success", "Vehicle updated successfully!");
+      res.redirect("/inv/management"); // Redirect to management page
+    } else {
+      req.flash("error", "Vehicle update failed. Please try again.");
+      res.redirect(`/inv/edit/${inv_id}`); // Redirect back to the edit form
+    }
+  } catch (error) {
+    console.error("Error updating inventory:", error);
+    req.flash("error", "An unexpected error occurred. Please try again.");
+    res.redirect(`/inv/edit/${req.body.inv_id}`);
+  }
+};
 
 module.exports = {
   buildManagementView: invCont.buildManagementView,
   editInventoryView: invCont.editInventoryView,
   getInventoryJSON: invCont.getInventoryJSON,
+  updateInventory: invCont.updateInventory,
 };

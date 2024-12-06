@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const invController = require("../controllers/invController");
 const Util = require("../utilities");
+const validate = require("../utilities/validation");
 
 // Redirect /inv to /inv/management
 router.get("/", (req, res) => {
@@ -60,6 +61,14 @@ router.get(
 router.get(
   "/edit/:inv_id",
   Util.handleErrors(invController.editInventoryView)
+);
+
+// Route to update inventory
+router.post(
+  "/update/",
+  validate.vehicleRules(),
+  validate.checkUpdateData,
+  Util.handleErrors(invController.updateInventory)
 );
 
 module.exports = router;
