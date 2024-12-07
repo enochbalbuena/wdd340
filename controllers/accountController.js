@@ -162,18 +162,22 @@ async function accountLogin(req, res) {
 }
 
 // Build Account Management View
-// Build Account Management View (Updated)
 const buildAccountManagement = async (req, res, next) => {
   try {
     const nav = await getNav();
-    const accountData = res.locals.accountData; // Retrieve account data from middleware
+    const accountData = res.locals.accountData;
     const isAdminOrEmployee = ["Admin", "Employee"].includes(accountData.account_type);
     const isClient = accountData.account_type === "Client";
+
+    const flashMessages = {
+      success: req.flash("success"),
+      error: req.flash("error"),
+    };
 
     res.render("account/management", {
       title: "Account Management",
       nav,
-      flashMessages: res.locals.flashMessages || {},
+      flashMessages,
       accountData,
       isAdminOrEmployee,
       isClient,
@@ -248,8 +252,11 @@ const changePassword = async (req, res, next) => {
     const { account_id, account_password } = req.body;
 
     // Server-side validation for password
-    if (!account_password || account_password.length < 8) {
-      req.flash("error", "Password must be at least 8 characters long.");
+    if (!account_password || account_password.length < 12) {
+      req.flash(
+        "error",
+        "Password must be at least 12 characters long and include an uppercase letter, a number, and a special character."
+      );
       return res.redirect(`/account/update/${account_id}`);
     }
 
@@ -258,17 +265,19 @@ const changePassword = async (req, res, next) => {
 
     if (passwordResult) {
       req.flash("success", "Password updated successfully.");
-      return res.redirect("/account");
     } else {
       req.flash("error", "Failed to update password. Please try again.");
-      return res.redirect(`/account/update/${account_id}`);
     }
+
+    // Redirect to account management, ensuring flash messages are passed
+    return res.redirect("/account");
   } catch (error) {
     console.error("Error updating password:", error);
     req.flash("error", "An unexpected error occurred. Please try again.");
     res.redirect(`/account/update/${req.body.account_id}`);
   }
 };
+
 
 // Logout process
 async function logout(req, res) {

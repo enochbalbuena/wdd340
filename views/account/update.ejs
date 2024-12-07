@@ -55,21 +55,40 @@
   
     <!-- Change Password Form -->
     <section>
-      <h2>Change Password</h2>
-      <form class="account-password-form" action="/account/change-password" method="POST">
-        <input type="hidden" name="account_id" value="<%= accountData.account_id %>" />
-  
-        <label for="account_password">New Password</label>
-        <input
-          type="password"
-          id="account_password"
-          name="account_password"
-          placeholder="Enter new password"
-          required
-        />
-        <p>Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.</p>
-  
-        <button type="submit" class="btn-submit">Change Password</button>
-      </form>
-    </section>
+        <h2>Change Password</h2>
+        <form class="account-password-form" action="/account/change-password" method="POST">
+          <input type="hidden" name="account_id" value="<%= accountData.account_id %>" />
+      
+          <label for="account_password">New Password</label>
+          <div class="password-container">
+            <input
+              type="password"
+              id="account_password"
+              name="account_password"
+              placeholder="Enter new password"
+              required
+            />
+            <button type="button" id="toggle-password" class="toggle-password">Show</button>
+          </div>
+          <p>Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.</p>
+      
+          <button type="submit" class="btn-submit">Change Password</button>
+        </form>
+      </section>
   </main>
+
+  <script>
+    // JavaScript for toggling password visibility
+    const passwordInput = document.getElementById("account_password");
+    const togglePasswordButton = document.getElementById("toggle-password");
+  
+    togglePasswordButton.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePasswordButton.textContent = "Hide";
+      } else {
+        passwordInput.type = "password";
+        togglePasswordButton.textContent = "Show";
+      }
+    });
+  </script>
