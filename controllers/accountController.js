@@ -162,13 +162,21 @@ async function accountLogin(req, res) {
 }
 
 // Build Account Management View
+// Build Account Management View (Updated)
 const buildAccountManagement = async (req, res, next) => {
   try {
     const nav = await getNav();
+    const accountData = res.locals.accountData; // Retrieve account data from middleware
+    const isAdminOrEmployee = ["Admin", "Employee"].includes(accountData.account_type);
+    const isClient = accountData.account_type === "Client";
+
     res.render("account/management", {
       title: "Account Management",
       nav,
       flashMessages: res.locals.flashMessages || {},
+      accountData,
+      isAdminOrEmployee,
+      isClient,
       errors: null,
     });
   } catch (error) {
@@ -176,6 +184,98 @@ const buildAccountManagement = async (req, res, next) => {
   }
 };
 
+// Build Update Account Information View
+const buildUpdateAccountView = async (req, res, next) => {
+  try {
+    const nav = await getNav();
+    const accountId = req.params.account_id;
+
+    // Fetch the account data by ID
+    const accountData = await accountModel.getAccountById(accountId);
+    if (!accountData) {
+      req.flash("error", "Account not found.");
+      return res.redirect("/account");
+    }
+
+    res.render("account/update", {
+      title: "Update Account Information",
+      nav,
+      accountData,
+      errors: null,
+    });
+  } catch (error) {
+    console.error("Error building update account view:", error);
+    next(error);
+  }
+};
+
+// Update Account Information
+const updateAccount = async (req, res, next) => {
+  try {
+    const { account_id, account_firstname, account_lastname, account_email } = req.body;
+
+    // Server-side validation
+    if (!account_firstname || !account_lastname || !account_email) {
+      req.flash("error", "All fields are required.");
+      return res.redirect(`/account/update/${account_id}`);
+    }
+
+    const emailExists = await accountModel.getAccountByEmail(account_email);
+    if (emailExists && emailExists.account_id !== parseInt(account_id)) {
+      req.flash("error", "The email address is already in use.");
+      return res.redirect(`/account/update/${account_id}`);
+    }
+
+    const updateResult = await accountModel.updateAccount(account_id, account_firstname, account_lastname, account_email);
+
+    if (updateResult) {
+      req.flash("success", "Account information updated successfully.");
+      return res.redirect("/account");
+    } else {
+      req.flash("error", "Failed to update account information. Please try again.");
+      return res.redirect(`/account/update/${account_id}`);
+    }
+  } catch (error) {
+    console.error("Error updating account information:", error);
+    req.flash("error", "An unexpected error occurred. Please try again.");
+    res.redirect(`/account/update/${req.body.account_id}`);
+  }
+};
+
+// Change Password
+const changePassword = async (req, res, next) => {
+  try {
+    const { account_id, account_password } = req.body;
+
+    // Server-side validation for password
+    if (!account_password || account_password.length < 8) {
+      req.flash("error", "Password must be at least 8 characters long.");
+      return res.redirect(`/account/update/${account_id}`);
+    }
+
+    const hashedPassword = await bcrypt.hash(account_password, 10);
+    const passwordResult = await accountModel.updatePassword(account_id, hashedPassword);
+
+    if (passwordResult) {
+      req.flash("success", "Password updated successfully.");
+      return res.redirect("/account");
+    } else {
+      req.flash("error", "Failed to update password. Please try again.");
+      return res.redirect(`/account/update/${account_id}`);
+    }
+  } catch (error) {
+    console.error("Error updating password:", error);
+    req.flash("error", "An unexpected error occurred. Please try again.");
+    res.redirect(`/account/update/${req.body.account_id}`);
+  }
+};
+
+// Logout process
+async function logout(req, res) {
+  res.clearCookie("jwt");
+  req.flash("success", "You have been logged out.");
+  res.redirect("/");
+}
 
 module.exports = {
   buildLogin,
@@ -184,4 +284,8 @@ module.exports = {
   registerAccount,
   accountLogin,
   buildAccountManagement,
+  buildUpdateAccountView,
+  updateAccount,
+  changePassword,
+  logout
 };

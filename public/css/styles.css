@@ -899,6 +899,103 @@ form.add-vehicle-form button:hover {
   border: 1px solid #ccc;
 }
 
+/******* Account Update and Management Styles *******/
+
+/* Container for both views */
+.account-container {
+  max-width: 800px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+/* Titles for both views */
+.account-container h1,
+.account-container h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+/* Links for account management */
+.management-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Buttons for navigation or actions */
+.account-container .btn-link {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #002b41;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.account-container .btn-link:hover {
+  background-color: #ff5722;
+}
+
+/* Form container for account update */
+.account-update-form,
+.account-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Form labels */
+.account-update-form label,
+.account-password-form label {
+  font-weight: bold;
+  color: #555;
+}
+
+/* Form inputs */
+.account-update-form input,
+.account-password-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.account-update-form input:focus,
+.account-password-form input:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Buttons for forms */
+.account-update-form button,
+.account-password-form button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.account-update-form button:hover,
+.account-password-form button:hover {
+  background-color: #0056b3;
+}
+
 @media (max-width: 767px) {
   .content-grid {
     flex-direction: column;

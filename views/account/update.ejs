@@ -1,0 +1,75 @@
+<main class="account-container">
+    <h1>Update Account Information</h1>
+  
+    <% if (flashMessages && flashMessages.error) { %>
+      <div class="flash error">
+        <% flashMessages.error.forEach((message) => { %>
+          <p><%= message %></p>
+        <% }) %>
+      </div>
+    <% } %>
+    <% if (flashMessages && flashMessages.success) { %>
+      <div class="flash success">
+        <% flashMessages.success.forEach((message) => { %>
+          <p><%= message %></p>
+        <% }) %>
+      </div>
+    <% } %>
+  
+    <!-- Account Update Form -->
+    <section>
+      <h2>Account Update</h2>
+      <form class="account-update-form" action="/account/update" method="POST">
+        <input type="hidden" name="account_id" value="<%= accountData.account_id %>" />
+  
+        <label for="account_firstname">First Name</label>
+        <input
+          type="text"
+          id="account_firstname"
+          name="account_firstname"
+          value="<%= accountData.account_firstname %>"
+          required
+        />
+  
+        <label for="account_lastname">Last Name</label>
+        <input
+          type="text"
+          id="account_lastname"
+          name="account_lastname"
+          value="<%= accountData.account_lastname %>"
+          required
+        />
+  
+        <label for="account_email">Email</label>
+        <input
+          type="email"
+          id="account_email"
+          name="account_email"
+          value="<%= accountData.account_email %>"
+          required
+        />
+  
+        <button type="submit" class="btn-submit">Update Information</button>
+      </form>
+    </section>
+  
+    <!-- Change Password Form -->
+    <section>
+      <h2>Change Password</h2>
+      <form class="account-password-form" action="/account/change-password" method="POST">
+        <input type="hidden" name="account_id" value="<%= accountData.account_id %>" />
+  
+        <label for="account_password">New Password</label>
+        <input
+          type="password"
+          id="account_password"
+          name="account_password"
+          placeholder="Enter new password"
+          required
+        />
+        <p>Passwords must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.</p>
+  
+        <button type="submit" class="btn-submit">Change Password</button>
+      </form>
+    </section>
+  </main>

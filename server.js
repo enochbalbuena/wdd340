@@ -16,6 +16,7 @@ const cookieParser = require("cookie-parser")
 
 app.use(cookieParser())
 app.use(utilities.checkJWTToken)
+app.use(utilities.setLoginState);
 
 // Session Middleware
 app.use(

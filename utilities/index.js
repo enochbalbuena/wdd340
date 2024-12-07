@@ -162,4 +162,43 @@ Util.checkLogin = (req, res, next) => {
   }
 };
 
+/* ****************************************
+ * Middleware to set login state
+ **************************************** */
+Util.setLoginState = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      (err, accountData) => {
+        if (err) {
+          res.locals.loggedin = false;
+          res.locals.accountData = null;
+        } else {
+          res.locals.loggedin = true;
+          res.locals.accountData = accountData;
+        }
+        next();
+      }
+    );
+  } else {
+    res.locals.loggedin = false;
+    res.locals.accountData = null;
+    next();
+  }
+};
+
+/* ****************************************
+ * Middleware to check account type
+ **************************************** */
+Util.checkAccountType = (req, res, next) => {
+  const accountData = res.locals.accountData;
+  if (accountData && (accountData.account_type === "Admin" || accountData.account_type === "Employee")) {
+    return next();
+  } else {
+    req.flash("error", "You do not have the required permissions to access this page.");
+    return res.redirect("/account/login");
+  }
+};
+
 module.exports = Util;
