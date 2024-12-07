@@ -30,19 +30,19 @@ router.get(
 // Route for add-classification view
 router.get(
   "/add-classification",
-  Util.handleErrors(invController.buildAddClassificationView) // Wrap async function
+  Util.handleErrors(invController.buildAddClassificationView)
 );
 
 // Route to process add-classification
 router.post(
   "/add-classification",
-  Util.handleErrors(invController.processAddClassification) // Wrap async function
+  Util.handleErrors(invController.processAddClassification)
 );
 
 // Route for add-vehicle view
 router.get(
   "/add-vehicle",
-  Util.handleErrors(invController.buildAddVehicleView) // Wrap async function
+  Util.handleErrors(invController.buildAddVehicleView)
 );
 
 // Route to process add-vehicle
@@ -69,6 +69,18 @@ router.post(
   validate.vehicleRules(),
   validate.checkUpdateData,
   Util.handleErrors(invController.updateInventory)
+);
+
+// Route for delete confirmation view
+router.get(
+  "/delete/:inv_id",
+  Util.handleErrors(invController.buildDeleteConfirmationView) // Wrap async function
+);
+
+// Route to process delete inventory
+router.post(
+  "/delete/",
+  Util.handleErrors(invController.processDeleteInventory) // Wrap async function
 );
 
 module.exports = router;

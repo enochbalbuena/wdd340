@@ -104,9 +104,6 @@ async function addVehicle(vehicleData) {
 /* ***************************
  *  Update Inventory Data
  * ************************** */
-/* ***************************
- *  Update Inventory Data
- * ************************** */
 async function updateInventory(
   inv_id,
   inv_make,
@@ -140,14 +137,14 @@ async function updateInventory(
       inv_make,
       inv_model,
       inv_description,
-      inv_image || "/images/vehicles/no-image.png", // Default value
-      inv_thumbnail || "/images/vehicles/no-image.png", // Default value
+      inv_image || "/images/vehicles/no-image.png",
+      inv_thumbnail || "/images/vehicles/no-image.png",
       inv_price,
       inv_year,
       inv_miles,
       inv_color,
       classification_id,
-      inv_id, // Ensure inv_id is the last placeholder
+      inv_id,
     ]);
     return data.rows[0];
   } catch (error) {
@@ -156,6 +153,21 @@ async function updateInventory(
   }
 }
 
+/* ***************************
+ *  Delete Inventory Item
+ * ************************** */
+async function deleteInventory(inv_id) {
+  try {
+    const sql = "DELETE FROM public.inventory WHERE inv_id = $1";
+    const result = await pool.query(sql, [inv_id]);
+    return result.rowCount; // Ensure it returns the number of deleted rows
+  } catch (error) {
+    console.error("Error deleting inventory item:", error);
+    throw error; // Throw the error to propagate it
+  }
+}
+
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
@@ -163,4 +175,5 @@ module.exports = {
   addClassification,
   addVehicle,
   updateInventory,
+  deleteInventory,
 };

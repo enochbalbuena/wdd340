@@ -85,7 +85,7 @@ invCont.buildAddClassificationView = async function (req, res, next) {
       title: "Add Classification",
       nav,
       flashMessages,
-      stickyData: req.body || {}, // Add stickyData for rendering
+      stickyData: req.body || {},
     });
   } catch (error) {
     next(error);
@@ -111,14 +111,20 @@ invCont.processAddClassification = async function (req, res, next) {
       [classification_name]
     );
 
-    req.flash("success", `The classification '${classification_name}' was successfully added.`);
+    req.flash(
+      "success",
+      `The classification '${classification_name}' was successfully added.`
+    );
     res.redirect("/inv/management");
   } catch (err) {
-    console.error("Database Error Details:", err); // Log the error details
+    console.error("Database Error Details:", err);
     if (err.code === "23505") {
       req.flash("error", "This classification already exists.");
     } else {
-      req.flash("error", "There was an error adding the classification. Please try again.");
+      req.flash(
+        "error",
+        "There was an error adding the classification. Please try again."
+      );
     }
     res.redirect("/inv/add-classification");
   }
@@ -130,7 +136,7 @@ invCont.processAddClassification = async function (req, res, next) {
 invCont.buildAddVehicleView = async function (req, res, next) {
   try {
     const nav = await utilities.getNav();
-    const classificationList = await utilities.buildClassificationList(); // Use the new function
+    const classificationList = await utilities.buildClassificationList();
     res.render("./inventory/add-vehicle", {
       title: "Add Vehicle",
       nav,
@@ -292,9 +298,59 @@ invCont.updateInventory = async function (req, res, next) {
   }
 };
 
-module.exports = {
-  buildManagementView: invCont.buildManagementView,
-  editInventoryView: invCont.editInventoryView,
-  getInventoryJSON: invCont.getInventoryJSON,
-  updateInventory: invCont.updateInventory,
+/* ***************************
+ *  Build delete confirmation view
+ * ************************** */
+invCont.buildDeleteConfirmationView = async function (req, res, next) {
+  try {
+    const inv_id = parseInt(req.params.inv_id); // Collect inv_id from request
+    const nav = await utilities.getNav(); // Build navigation
+    const itemData = await invModel.getInventoryByInvId(inv_id); // Fetch data for inventory item
+
+    if (!itemData) {
+      req.flash("error", "Inventory item not found.");
+      return res.redirect("/inv/management");
+    }
+
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`; // Build item name
+    res.render("./inventory/delete-confirm", {
+      title: `Delete ${itemName}`, // Title for the view
+      nav,
+      inv_id: itemData.inv_id, // Pass necessary data to the view
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_price: itemData.inv_price,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
+/* ***************************
+ *  Process delete inventory item
+ * ************************** */
+invCont.processDeleteInventory = async function (req, res, next) {
+  try {
+    const inv_id = parseInt(req.body.inv_id, 10);
+    if (isNaN(inv_id)) {
+      req.flash("error", "Invalid inventory ID.");
+      return res.redirect("/inv/management");
+    }
+
+    const deleteResult = await invModel.deleteInventory(inv_id);
+    if (deleteResult > 0) {
+      req.flash("success", "Vehicle deleted successfully!");
+      return res.redirect("/inv/management");
+    } else {
+      req.flash("error", "Failed to delete the vehicle. It may not exist.");
+      return res.redirect("/inv/management");
+    }
+  } catch (error) {
+    console.error("Error deleting inventory:", error);
+    req.flash("error", "An unexpected error occurred. Please try again.");
+    return res.redirect("/inv/management");
+  }
+};
+
+module.exports = invCont;

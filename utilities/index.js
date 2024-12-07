@@ -116,10 +116,13 @@ Util.buildClassificationList = async function (selectedId) {
 Util.handleErrors = function (fn) {
   return function (req, res, next) {
     if (typeof fn !== "function") {
-      console.error("Error: fn is not a function:", fn);
-      return next(new TypeError("fn is not a function"));
+      console.error("Error: Provided handler is not a function:", fn);
+      return next(new TypeError("Handler is not a function"));
     }
-    Promise.resolve(fn(req, res, next)).catch(next);
+    Promise.resolve(fn(req, res, next)).catch((error) => {
+      console.error("Caught error in route handler:", error);
+      next(error);
+    });
   };
 };
 

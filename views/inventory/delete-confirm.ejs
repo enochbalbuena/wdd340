@@ -1,0 +1,66 @@
+<main class="form-container">
+    <h1>Delete Vehicle</h1>
+  
+    <!-- Flash Messages -->
+    <% if (flashMessages && flashMessages.error) { %>
+      <div class="flash-message error">
+        <p><%= flashMessages.error %></p>
+      </div>
+    <% } %>
+    <% if (flashMessages && flashMessages.success) { %>
+      <div class="flash-message success">
+        <p><%= flashMessages.success %></p>
+      </div>
+    <% } %>
+  
+    <!-- Delete Confirmation Form -->
+    <p>Confirm Deletion - The delete is permanent.</p>
+    <form id="delete-inventory-form" action="/inv/delete" method="POST" novalidate>
+      <!-- Hidden input for vehicle ID -->
+      <input type="hidden" name="inv_id" value="<%= inv_id %>" />
+  
+      <!-- Vehicle Make -->
+      <label for="inv_make">Make</label>
+      <input
+        type="text"
+        id="inv_make"
+        name="inv_make"
+        value="<%= inv_make || '' %>"
+        readonly
+      />
+  
+      <!-- Vehicle Model -->
+      <label for="inv_model">Model</label>
+      <input
+        type="text"
+        id="inv_model"
+        name="inv_model"
+        value="<%= inv_model || '' %>"
+        readonly
+      />
+  
+      <!-- Vehicle Year -->
+      <label for="inv_year">Year</label>
+      <input
+        type="text"
+        id="inv_year"
+        name="inv_year"
+        value="<%= inv_year || '' %>"
+        readonly
+      />
+  
+      <!-- Vehicle Price -->
+      <label for="inv_price">Price</label>
+      <input
+        type="number"
+        id="inv_price"
+        name="inv_price"
+        value="<%= inv_price || '' %>"
+        readonly
+      />
+  
+      <!-- Submit Button -->
+      <button type="submit" class="btn-submit">Delete Vehicle</button>
+    </form>
+  </main>
+  
