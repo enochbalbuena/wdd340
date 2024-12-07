@@ -17,7 +17,7 @@ body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   color: #333;
-  background-image: url('/images/site/checkerboard.jpg');
+  background-image: url('/images/site/checkerboard.webp');
   background-size: 200px 200px;
   background-position: center;
   background-attachment: fixed;
@@ -107,33 +107,34 @@ nav ul li a:hover {
   position: relative;
   width: 100%;
   height: 60vh;
-  background-image: url('/images/vehicles/delorean.jpg');
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   margin-bottom: 40px;
+  overflow: hidden;
 }
 
-.hero-overlay {
+.hero-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: relative;
+  z-index: 1;
+  /* any additional styling you need */
 }
 
 .hero-content {
   position: relative;
   max-width: 700px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, .8);
 }
 
 .hero h1 {
@@ -515,8 +516,8 @@ footer p a:hover {
 }
 
 .login-container button {
-  background-color: #1abc9c; /* Green login button */
-  color: #fff;
+  background-color: #3eeb66; /* Green login button */
+  color: #000000;
   border: none;
   padding: 12px;
   border-radius: 5px;
@@ -526,7 +527,8 @@ footer p a:hover {
 }
 
 .login-container button:hover {
-  background-color: #16a085;
+  background-color: #ff3c3c;
+  color: #fff;
 }
 
 .signup-link {
@@ -535,7 +537,7 @@ footer p a:hover {
 }
 
 .signup-link a {
-  color: #1abc9c;
+  color: #d7f8ff;
   text-decoration: none;
 }
 
@@ -548,18 +550,25 @@ footer p a:hover {
 .registration-container {
   max-width: 400px;
   margin: 50px auto;
-  background-color: #fff;
+  background-color: #34495e;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: left;
 }
 
+.registration-container label {
+  text-align: left;
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffffff;
+}
+
 .registration-title {
   font-size: 1.8em;
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: #ffffff;
 }
 
 .registration-form {
@@ -576,7 +585,6 @@ footer p a:hover {
 
 .form-label {
   font-weight: bold;
-  color: #555;
 }
 
 .form-input {
@@ -596,13 +604,14 @@ footer p a:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: white;
 }
 
 .toggle-password {
   padding: 8px 12px;
   border: none;
-  background-color: #007BFF;
-  color: white;
+  background-color: #3eeb66;
+  color: rgb(0, 0, 0);
   border-radius: 5px;
   font-size: 0.9em;
   cursor: pointer;
@@ -610,19 +619,20 @@ footer p a:hover {
 }
 
 .toggle-password:hover {
-  background-color: #0056b3;
+  background-color: #ff3c3c;
+  color: rgb(255, 255, 255);
 }
 
 .password-hint {
   font-size: 0.85em;
-  color: #666;
+  color: #ffffff;
   margin-top: 5px;
 }
 
 .registration-button {
   padding: 12px;
-  background-color: #28a745;
-  color: white;
+  background-color: #3eeb66;
+  color: color: rgb(0, 0, 0);
   border: none;
   border-radius: 5px;
   font-size: 1em;
@@ -631,7 +641,8 @@ footer p a:hover {
 }
 
 .registration-button:hover {
-  background-color: #218838;
+  background-color: #ff3c3c;
+  color: white;
 }
 
 .management-container {
@@ -650,8 +661,8 @@ footer p a:hover {
 .btn-link {
   display: inline-block;
   padding: 10px 15px;
-  background-color: #002b41;
-  color: #fff;
+  background-color: #3eeb66;
+  color: #000000;
   text-decoration: none;
   text-align: center;
   border-radius: 5px;
@@ -659,6 +670,7 @@ footer p a:hover {
 
 .btn-link:hover {
   background-color: #ff5722;
+  background-color: #fff;
 }
 
 .form-container {
@@ -717,8 +729,8 @@ form.add-vehicle-form .form-select {
 
 form.add-vehicle-form button {
   padding: 10px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #3eeb66;
+  color: #000000;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -727,7 +739,8 @@ form.add-vehicle-form button {
 }
 
 form.add-vehicle-form button:hover {
-  background-color: #0056b3;
+  background-color: #ff5722;
+  color: white;
 }
 
 /* Form Styles */
@@ -754,7 +767,7 @@ form.add-vehicle-form button:hover {
 }
 
 .form-input:focus {
-  border-color: #007BFF;
+  border-color: #3eeb66;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   outline: none;
 }
@@ -766,16 +779,16 @@ form.add-vehicle-form button:hover {
 }
 
 .flash-message.success {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #ffffff;
+  color: #000000;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
 }
 
 .flash-message.error {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #ffffff;
+  color: #000000;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -783,8 +796,8 @@ form.add-vehicle-form button:hover {
 
 .btn-submit {
   padding: 10px 15px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #3eeb66;
+  color: #000000;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -793,7 +806,8 @@ form.add-vehicle-form button:hover {
 }
 
 .btn-submit:hover {
-  background-color: #0056b3;
+  background-color: #ff5722;
+  color: #ffffff;
 }
 
 #inventoryDisplay {
@@ -848,8 +862,8 @@ form.add-vehicle-form button:hover {
 
 #edit-inventory-form button.btn-submit {
   padding: 12px 20px;
-  background-color: #002b41;
-  color: white;
+  background-color: #3eeb66;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 4px;
   font-size: 1.1rem;
@@ -859,6 +873,7 @@ form.add-vehicle-form button:hover {
 
 #edit-inventory-form button.btn-submit:hover {
   background-color: #ff5722;
+  color: white;
 }
 
 #edit-inventory-form textarea {
@@ -869,7 +884,7 @@ form.add-vehicle-form button:hover {
 #edit-inventory-form select:focus,
 #edit-inventory-form input:focus,
 #edit-inventory-form textarea:focus {
-  border-color: #007bff;
+  border-color: #ff5722;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
@@ -886,7 +901,7 @@ form.add-vehicle-form button:hover {
 }
 
 #edit-inventory-form select:focus {
-  border-color: #007bff; /* Blue outline on focus */
+  border-color: #ff5722; /* Blue outline on focus */
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Glow effect */
   outline: none;
 }
@@ -933,8 +948,8 @@ form.add-vehicle-form button:hover {
 .account-container .btn-link {
   display: inline-block;
   padding: 10px 15px;
-  background-color: #002b41;
-  color: #fff;
+  background-color: #3eeb66;
+  color: #000000;
   text-decoration: none;
   text-align: center;
   border-radius: 5px;
@@ -942,6 +957,7 @@ form.add-vehicle-form button:hover {
 
 .account-container .btn-link:hover {
   background-color: #ff5722;
+  color: #fff;
 }
 
 /* Form container for account update */
@@ -973,7 +989,7 @@ form.add-vehicle-form button:hover {
 
 .account-update-form input:focus,
 .account-password-form input:focus {
-  border-color: #007BFF;
+  border-color: #ff5722;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   outline: none;
 }
@@ -982,8 +998,8 @@ form.add-vehicle-form button:hover {
 .account-update-form button,
 .account-password-form button {
   padding: 10px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #3eeb66;
+  color: #000000;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -993,7 +1009,8 @@ form.add-vehicle-form button:hover {
 
 .account-update-form button:hover,
 .account-password-form button:hover {
-  background-color: #0056b3;
+  background-color: #ff5722;
+  color: #fff;
 }
 
 @media (max-width: 767px) {

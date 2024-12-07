@@ -1,24 +1,39 @@
 <div class="home-container">
   <div class="hero">
+    <!-- Responsive image setup -->
+    <img class="hero-image"
+      src="/images/vehicles/delorean-1500.webp" 
+      alt="A Delorean in a scenic setting"
+      width="1500" 
+      height="750"
+      srcset="
+        /images/vehicles/delorean-600.webp 600w,
+        /images/vehicles/delorean-900.webp 900w,
+        /images/vehicles/delorean-1500.webp 1500w
+      "
+      sizes="(max-width: 600px) 600px, (max-width: 900px) 900px, 1500px"
+    >
+
     <div class="hero-overlay">
       <div class="hero-content">
         <h1>Welcome to CSE Motors!</h1>
-        <!-- Flash Messages -->
-          <% if (flashMessages.error && flashMessages.error.length > 0) { %>
-            <div class="flash-message error">
-              <% flashMessages.error.forEach(function (msg) { %>
-                <p style="color: red;"><%= msg %></p>
-              <% }); %>
-            </div>
-          <% } %>
 
-          <% if (flashMessages.success && flashMessages.success.length > 0) { %>
-            <div class="flash-message success">
-              <% flashMessages.success.forEach(function (msg) { %>
-                <p style="color: green;"><%= msg %></p>
-              <% }); %>
-            </div>
-          <% } %>
+        <% if (flashMessages.error && flashMessages.error.length > 0) { %>
+          <div class="flash-message error">
+            <% flashMessages.error.forEach(function (msg) { %>
+              <p style="color: red;"><%= msg %></p>
+            <% }); %>
+          </div>
+        <% } %>
+
+        <% if (flashMessages.success && flashMessages.success.length > 0) { %>
+          <div class="flash-message success">
+            <% flashMessages.success.forEach(function (msg) { %>
+              <p style="color: green;"><%= msg %></p>
+            <% }); %>
+          </div>
+        <% } %>
+
         <p>Your dream car is just a click away. Discover our range of customized DMC Deloreans!</p>
         <button class="btn-own">Own Today</button>
       </div>
@@ -30,19 +45,19 @@
       <h2>Delorean Upgrades</h2>
       <div class="upgrade-items">
         <div class="upgrade-card">
-          <img src="/images/upgrades/flux-cap.png" alt="">
+          <img src="/images/upgrades/flux-cap.png" alt="" width="200" height="200">
           <a href="#">Flux Capacitor</a>
         </div>
         <div class="upgrade-card">
-          <img src="/images/upgrades/flame.jpg" alt="">
+          <img src="/images/upgrades/flame.jpg" alt="" width="200" height="200">
           <a href="#">Flame Decals</a>
         </div>
         <div class="upgrade-card">
-          <img src="/images/upgrades/bumper_sticker.jpg" alt="">
+          <img src="/images/upgrades/bumper_sticker.jpg" alt="" width="200" height="200">
           <a href="#">Bumper Stickers</a>
         </div>
         <div class="upgrade-card">
-          <img src="/images/upgrades/hub-cap.jpg" alt="">
+          <img src="/images/upgrades/hub-cap.jpg" alt="" width="200" height="200">
           <a href="#">Hub Caps</a>
         </div>
       </div>
