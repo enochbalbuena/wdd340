@@ -46,6 +46,16 @@ CREATE TABLE IF NOT EXISTS public.account
     CONSTRAINT account_pkey PRIMARY KEY (account_id)
 );
 
+-- Create the `inventory_images` table
+CREATE TABLE public.inventory_images (
+    id SERIAL PRIMARY KEY, -- Auto-incrementing ID for each image
+    inv_id INT NOT NULL, -- Foreign key referencing the `inventory` table
+    image_url CHARACTER VARYING NOT NULL, -- URL or path to the image
+    CONSTRAINT fk_inventory FOREIGN KEY (inv_id)
+        REFERENCES public.inventory (inv_id) -- Reference the `inv_id` column in the `inventory` table
+        ON DELETE CASCADE -- Automatically delete images if the associated inventory record is deleted
+);
+
 -- Data for table `classification`
 INSERT INTO public.classification (classification_name)
 VALUES ('Custom'),

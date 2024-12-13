@@ -14,7 +14,7 @@
   <% } %>
 
   <!-- Update Vehicle Form -->
-  <form id="edit-inventory-form" action="/inv/update" method="POST" novalidate>
+  <form id="edit-inventory-form" action="/inv/update" method="POST" enctype="multipart/form-data" novalidate>
     <!-- Hidden input for vehicle ID -->
     <input type="hidden" name="inv_id" value="<%= inv_id %>" />
 
@@ -106,9 +106,46 @@
       title="Enter a valid color name (e.g., Red)."
     />
 
+    <!-- Image Upload -->
+    <!-- Current Image -->
+    <img
+    src="<%= inv_image || '/images/vehicles/no-image.png' %>"
+    alt="Vehicle Image"
+    style="max-width: 200px; max-height: 200px;"
+    />
+
+    <!-- Option to delete the image -->
+    <label for="delete_image">Delete Current Image</label>
+    <input type="checkbox" id="delete_image" name="delete_image" />
+
+    <!-- Upload New Image -->
+    <label for="inv_image">Upload New Vehicle Image</label>
+    <input
+    type="file"
+    id="inv_image"
+    name="inv_image"
+    accept="image/*"
+    onchange="validateImageSize(event)"/>
+
     <!-- Submit Button -->
     <button type="submit" class="btn-submit" disabled>Update Vehicle</button>
   </form>
 </main>
 
 <script src="/js/inv-update.js"></script>
+<script>
+  /**
+   * Function to validate image file size.
+   * Limits file size to 2MB (2048 KB).
+   */
+  function validateImageSize(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+    const maxSizeInMB = 2; // Set the size limit (in MB)
+
+    if (file && file.size > maxSizeInMB * 1024 * 1024) {
+      alert("Image size exceeds 2MB. Please upload a smaller image.");
+      fileInput.value = ""; // Clear the input
+    }
+  }
+</script>

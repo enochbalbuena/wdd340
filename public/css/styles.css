@@ -1013,6 +1013,19 @@ form.add-vehicle-form button:hover {
   color: #fff;
 }
 
+/* Align the checkbox and label in a single row */
+#edit-inventory-form label[for="delete_image"] {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust spacing between label and checkbox */
+  font-weight: bold; /* Optional for consistent label style */
+}
+
+#edit-inventory-form input[type="checkbox"] {
+  margin: 0; /* Remove unnecessary margins for precise alignment */
+  display: inline-block; /* Ensure it stays inline with the label */
+}
+
 @media (max-width: 767px) {
   .content-grid {
     flex-direction: column;

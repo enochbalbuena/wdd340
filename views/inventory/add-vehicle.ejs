@@ -13,7 +13,7 @@
     </div>
   <% } %>
 
-  <form action="/inv/add-vehicle" method="POST" class="add-vehicle-form" novalidate>
+  <form action="/inv/add-vehicle" method="POST" class="add-vehicle-form" enctype="multipart/form-data" novalidate>
     <!-- Classification Dropdown -->
     <label for="classification_id">Classification</label>
     <select id="classification_id" name="classification_id" class="form-select" required>
@@ -102,7 +102,34 @@
       title="Enter a valid color name (e.g., Red)."
     />
 
+    <!-- Image Upload -->
+    <label for="inv_image">Upload Vehicle Image</label>
+    <input
+      type="file"
+      id="inv_image"
+      name="inv_image"
+      accept="image/*"
+      onchange="validateImageSize(event)" />
+
+
     <!-- Submit Button -->
     <button type="submit" class="btn-submit">Add Vehicle</button>
   </form>
 </main>
+
+<script>
+  /**
+   * Function to validate image file size.
+   * Limits file size to 2MB (2048 KB).
+   */
+  function validateImageSize(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+    const maxSizeInMB = 2; // Set the size limit (in MB)
+
+    if (file && file.size > maxSizeInMB * 1024 * 1024) {
+      alert("Image size exceeds 2MB. Please upload a smaller image.");
+      fileInput.value = ""; // Clear the input
+    }
+  }
+</script>

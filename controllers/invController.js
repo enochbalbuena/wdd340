@@ -1,8 +1,37 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
 const pool = require("../database/");
-
 const invCont = {};
+const multer = require("multer");
+const path = require("path");
+
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads");
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+
+// Configure Multer
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    const allowedFileTypes = /jpeg|jpg|png/;
+    const extname = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedFileTypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only .jpeg, .jpg, and .png files are allowed.'));
+    }
+  },
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB file size limit
+});
+
 
 /* ***************************
  *  Build inventory by classification view
@@ -164,6 +193,10 @@ invCont.processAddVehicle = async function (req, res, next) {
     inv_color,
   } = req.body;
 
+  console.log("req.body:", req.body); // Debug log
+  console.log("req.file:", req.file); // Debug log
+
+  // Ensure all required fields are provided
   if (
     !classification_id ||
     !inv_make ||
@@ -179,22 +212,42 @@ invCont.processAddVehicle = async function (req, res, next) {
       title: "Add Vehicle",
       nav: await utilities.getNav(),
       classificationList: await utilities.buildClassificationList(),
-      stickyData: req.body, // Pass back the data to repopulate the form
+      stickyData: req.body,
       flashMessages: req.flash(),
     });
   }
 
   try {
-    await invModel.addVehicle(req.body); // Pass full vehicle object to model
+    // Determine the image path
+    let imagePath = "/images/vehicles/no-image.png"; // Default image
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`; // Use uploaded file
+    }
+
+    // Add the vehicle and get its ID
+    const vehicleId = await invModel.addVehicle({
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_price,
+      inv_miles,
+      inv_color,
+      inv_image: imagePath,
+      inv_thumbnail: imagePath, // Thumbnail can match the main image
+    });
+
     req.flash("success", "Vehicle added successfully.");
     res.redirect("/inv");
   } catch (error) {
+    console.error("Error adding vehicle:", error.message);
     req.flash("error", "Failed to add the vehicle. Please try again.");
     res.render("./inventory/add-vehicle", {
       title: "Add Vehicle",
       nav: await utilities.getNav(),
       classificationList: await utilities.buildClassificationList(),
-      stickyData: req.body, // Pass back the data to repopulate the form
+      stickyData: req.body,
       flashMessages: req.flash(),
     });
   }
@@ -221,41 +274,47 @@ invCont.getInventoryJSON = async (req, res, next) => {
   }
 };
 
+/* ***************************
+ *  Edit Inventory View
+ * ************************** */
 invCont.editInventoryView = async function (req, res, next) {
   try {
-      const inv_id = parseInt(req.params.inv_id);
-      const nav = await utilities.getNav();
-      const itemData = await invModel.getInventoryByInvId(inv_id);
+    const inv_id = parseInt(req.params.inv_id);
+    const nav = await utilities.getNav();
+    const itemData = await invModel.getInventoryByInvId(inv_id);
 
-      if (!itemData) {
-          req.flash("error", "Inventory item not found.");
-          return res.redirect("/inv/management");
-      }
+    if (!itemData) {
+      req.flash("error", "Inventory item not found.");
+      return res.redirect("/inv/management");
+    }
 
-      const classificationSelect = await utilities.buildClassificationList(itemData.classification_id);
-      const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
+    const classificationSelect = await utilities.buildClassificationList(itemData.classification_id);
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
 
-      res.render("./inventory/edit-inventory", {
-        title: "Edit " + itemName,
-        nav,
-        classificationList: classificationSelect,
-        inv_id: itemData.inv_id,
-        inv_make: itemData.inv_make,
-        inv_model: itemData.inv_model,
-        inv_year: itemData.inv_year,
-        inv_description: itemData.inv_description,
-        inv_price: itemData.inv_price,
-        inv_miles: itemData.inv_miles,
-        inv_color: itemData.inv_color,
+    res.render("./inventory/edit-inventory", {
+      title: "Edit " + itemName,
+      nav,
+      classificationList: classificationSelect,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_description: itemData.inv_description,
+      inv_price: itemData.inv_price,
+      inv_miles: itemData.inv_miles,
+      inv_color: itemData.inv_color,
+      inv_image: itemData.inv_image || "/images/vehicles/no-image.png", // Pass the image URL
     });
   } catch (error) {
-      next(error);
+    next(error);
   }
 };
 
 /* ***************************
  *  Update Inventory Data
  * ************************** */
+const fs = require("fs"); // Import file system module for file deletion
+
 invCont.updateInventory = async function (req, res, next) {
   try {
     const {
@@ -268,15 +327,45 @@ invCont.updateInventory = async function (req, res, next) {
       inv_price,
       inv_miles,
       inv_color,
+      delete_image, // Checkbox for deleting the existing image
     } = req.body;
 
+    // Fetch the current data for the vehicle
+    const currentData = await invModel.getInventoryByInvId(inv_id);
+    let newImagePath = currentData.inv_image; // Default to the current image
+
+    // Handle deletion of the current image if the checkbox is selected
+    if (delete_image === "on") {
+      const filePath = `public${currentData.inv_image}`; // Path to the current image on the server
+      if (fs.existsSync(filePath) && currentData.inv_image !== "/images/vehicles/no-image.png") {
+        fs.unlinkSync(filePath); // Delete the current image file
+      }
+      // Set the image path to the default placeholder
+      newImagePath = "/images/vehicles/no-image.png";
+    }
+
+    // Handle uploading a new image
+    if (req.file) {
+      // Save the new image path
+      newImagePath = `/uploads/${req.file.filename}`;
+
+      // Automatically delete the previously referenced image if it's not the default placeholder
+      if (currentData.inv_image && currentData.inv_image !== "/images/vehicles/no-image.png") {
+        const oldImagePath = `public${currentData.inv_image}`;
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath); // Delete the old image
+        }
+      }
+    }
+
+    // Update the inventory item in the database
     const updateResult = await invModel.updateInventory(
       inv_id,
       inv_make,
       inv_model,
       inv_description,
-      "/images/vehicles/no-image.png", // Placeholder for image
-      "/images/vehicles/no-image.png", // Placeholder for thumbnail
+      newImagePath, // Use the updated image path
+      newImagePath, // Thumbnail (optional, can match the image path)
       inv_price,
       inv_year,
       inv_miles,
@@ -286,7 +375,7 @@ invCont.updateInventory = async function (req, res, next) {
 
     if (updateResult) {
       req.flash("success", "Vehicle updated successfully!");
-      res.redirect("/inv/management"); // Redirect to management page
+      res.redirect("/inv/management"); // Redirect to the management page
     } else {
       req.flash("error", "Vehicle update failed. Please try again.");
       res.redirect(`/inv/edit/${inv_id}`); // Redirect back to the edit form
@@ -297,6 +386,7 @@ invCont.updateInventory = async function (req, res, next) {
     res.redirect(`/inv/edit/${req.body.inv_id}`);
   }
 };
+
 
 /* ***************************
  *  Build delete confirmation view

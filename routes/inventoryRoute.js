@@ -3,6 +3,8 @@ const router = express.Router();
 const invController = require("../controllers/invController");
 const Util = require("../utilities");
 const validate = require("../utilities/validation");
+const multer = require("multer");
+const upload = multer({ dest: "public/uploads/" });
 
 // Redirect /inv to /inv/management
 router.get("/", (req, res) => {
@@ -49,9 +51,9 @@ router.get(
   Util.handleErrors(invController.buildAddVehicleView)
 );
 
-// Route to process add-vehicle
 router.post(
   "/add-vehicle",
+  upload.single("inv_image"), // Add multer middleware for file upload
   Util.checkAccountType,
   Util.handleErrors(invController.processAddVehicle)
 );
@@ -71,11 +73,13 @@ router.get(
 // Route to update inventory
 router.post(
   "/update/",
+  upload.single("inv_image"), // Add multer middleware
   Util.checkAccountType,
   validate.vehicleRules(),
   validate.checkUpdateData,
   Util.handleErrors(invController.updateInventory)
 );
+
 
 // Route for delete confirmation view
 router.get(

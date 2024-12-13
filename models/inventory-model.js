@@ -77,15 +77,18 @@ async function addVehicle(vehicleData) {
     inv_price,
     inv_miles,
     inv_color,
+    inv_image, // Pass image URL
+    inv_thumbnail, // Pass thumbnail URL
   } = vehicleData;
 
   try {
     const sql = `
       INSERT INTO public.inventory 
       (classification_id, inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, '/images/vehicles/no-image.png', '/images/vehicles/no-image.png')
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING inv_id
     `;
-    await pool.query(sql, [
+    const result = await pool.query(sql, [
       classification_id,
       inv_make,
       inv_model,
@@ -94,10 +97,13 @@ async function addVehicle(vehicleData) {
       inv_price,
       inv_miles,
       inv_color,
+      inv_image,
+      inv_thumbnail,
     ]);
+    return result.rows[0].inv_id; // Return the generated inv_id
   } catch (error) {
-    console.error("Error adding vehicle:", error);
-    throw error;
+    console.error("Error adding vehicle to database:", error.message);
+    throw error; // Ensure the error propagates
   }
 }
 
