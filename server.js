@@ -9,13 +9,13 @@ const accountRoute = require("./routes/accountRoute");
 const errorRoute = require("./routes/errorRoute");
 const utilities = require("./utilities");
 const session = require("express-session");
-const pool = require("./database/");
+const pool = require("./database"); // Ensure this uses the correct database configuration
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
 
-app.use(cookieParser())
-app.use(utilities.checkJWTToken)
+app.use(cookieParser());
+app.use(utilities.checkJWTToken);
 app.use(utilities.setLoginState);
 
 // Session Middleware
@@ -37,7 +37,8 @@ app.use(flash());
 
 // Middleware to attach flash messages just before rendering
 app.use((req, res, next) => {
-  res.locals.flashMessages = {}; // Initialize flashMessages
+  res.locals.flashMessages = req.flash(); // Ensure flash messages exist globally
+  console.log("Middleware Flash Messages:", res.locals.flashMessages);
   next();
 });
 
@@ -59,18 +60,6 @@ app.get("/", baseController.buildHome);
 app.use("/inv", inventoryRoute);
 app.use("/account", accountRoute);
 app.use("/error", errorRoute);
-app.get('/test-flash', (req, res) => {
-  req.flash('success', 'Flash messages are working!');
-  res.redirect('/inv/management');
-});
-
-// Flash middleware
-app.use((req, res, next) => {
-  res.locals.flashMessages = req.flash(); // Ensure flash messages exist globally
-  console.log("Middleware Flash Messages:", res.locals.flashMessages);
-  next();
-});
-
 
 /* Error Handling */
 app.use(async (err, req, res, next) => {
@@ -106,6 +95,10 @@ app.use(async (req, res, next) => {
 /* Start the Server */
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";
+
+console.log("DATABASE_URL:", process.env.DATABASE_URL); // Debugging log
+console.log("NODE_ENV:", process.env.NODE_ENV);
+
 app.listen(port, () => {
   console.log(`App listening on http://${host}:${port}`);
 });
